@@ -18,6 +18,17 @@ export function activate(context: vscode.ExtensionContext) {
 
 		// Display a message box to the user
 		vscode.window.showInformationMessage('Hello World!');
+		vscode.window.showErrorMessage('My little error');
+		let options: vscode.InputBoxOptions = {
+			value: "Enter a message",
+			prompt: "Just a short message"
+			};
+		let msg = vscode.window.showInputBox(options);
+		if(typeof(msg) !== "undefined"){
+			vscode.window.showWarningMessage("success");
+		}
+
+		vscode.window.showWorkspaceFolderPick();
 	});
 
 	context.subscriptions.push(disposable);
