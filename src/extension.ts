@@ -31,10 +31,16 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showWorkspaceFolderPick();
 	});
 
-	let smileCommand = vscode.commands.registerTextEditorCommand("extension.smile", ()=>{
+	let smileCommand = vscode.commands.registerTextEditorCommand("extension.smile", (textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit)=>{
 		console.log('Smile command Called');
-		// let len = vscode.workspace.textDocuments.length;
-		// vscode.window.showInformationMessage(len.toString());
+		let snippet = new vscode.SnippetString('My little snippet');
+		textEditor.insertSnippet(snippet);
+		textEditor.edit((editBuilder: vscode.TextEditorEdit) => {
+			let start: vscode.Position = new vscode.Position(1, 10);
+			let end: vscode.Position = new vscode.Position(10, 0);
+			let range: vscode.Range = new vscode.Range(start, end);
+			editBuilder.delete(range);
+		});
 	});
 
 	context.subscriptions.push(helloCommand);
