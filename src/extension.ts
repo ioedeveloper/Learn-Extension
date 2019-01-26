@@ -36,11 +36,19 @@ export function activate(context: vscode.ExtensionContext) {
 		let snippet = new vscode.SnippetString('My little snippet');
 		textEditor.insertSnippet(snippet);
 		textEditor.edit((editBuilder: vscode.TextEditorEdit) => {
-			let start: vscode.Position = new vscode.Position(1, 10);
-			let end: vscode.Position = new vscode.Position(10, 0);
+			console.log('Line Numbers: ', textEditor.options.lineNumbers);
+			let start: vscode.Position = new vscode.Position(0, 0);
+			let end: vscode.Position = new vscode.Position(0, 5);
 			let range: vscode.Range = new vscode.Range(start, end);
 			editBuilder.delete(range);
+			textEditor.revealRange(range);
 		});
+		console.log('Options: ', textEditor.options);
+		console.log('Line Count: ',textEditor.document.lineCount);
+		console.log('Selection: ', textEditor.selection);
+		console.log('Selections: ', textEditor.selections);
+		console.log('View Column: ', textEditor.viewColumn);
+		console.log('Visible Ranges', textEditor.visibleRanges);
 	});
 
 	context.subscriptions.push(helloCommand);
