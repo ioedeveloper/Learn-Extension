@@ -32,14 +32,15 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	let smileCommand = vscode.commands.registerTextEditorCommand("extension.smile", (textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit)=>{
+		vscode.commands.executeCommand('extension.helloWorld');
 		console.log('Smile command Called');
 		let snippet = new vscode.SnippetString('My little snippet');
 		textEditor.insertSnippet(snippet);
+		let start: vscode.Position = new vscode.Position(0, 0);
+		let end: vscode.Position = new vscode.Position(0, 5);
+		let range: vscode.Range = new vscode.Range(start, end);
 		textEditor.edit((editBuilder: vscode.TextEditorEdit) => {
 			console.log('Line Numbers: ', textEditor.options.lineNumbers);
-			let start: vscode.Position = new vscode.Position(0, 0);
-			let end: vscode.Position = new vscode.Position(0, 5);
-			let range: vscode.Range = new vscode.Range(start, end);
 			editBuilder.delete(range);
 			textEditor.revealRange(range);
 		});
@@ -49,6 +50,17 @@ export function activate(context: vscode.ExtensionContext) {
 		console.log('Selections: ', textEditor.selections);
 		console.log('View Column: ', textEditor.viewColumn);
 		console.log('Visible Ranges', textEditor.visibleRanges);
+		/** Hide Texteditor */
+		textEditor.hide();
+		/** Show Texteditor */
+		textEditor.show();
+
+		vscode.window.onDidChangeActiveTextEditor(listener => (e: vscode.TextEditor | undefined) =>{
+			if(typeof(e) !== undefined){
+				console.log('Text Editor Changed');
+			}
+		});
+
 	});
 
 	context.subscriptions.push(helloCommand);
