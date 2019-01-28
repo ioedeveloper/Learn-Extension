@@ -10,26 +10,21 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.helloWorld",
-		"onCommand:extension.smile"
+		"*"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
-		"commands": [
+		"colors": [
 			{
-				"command": "extension.helloWorld",
-				"title": "Hello World"
-			},
-			{
-				"command": "extension.smile",
-				"title": "Smile"
-			}],
-		"keybindings": [{
-			"command": "extension.smile",
-			"key": "ctrl+2",
-			"mac": "cmd+2",
-			"when": "editorTextFocus"
-		}]
+				"id": "myextension.largeNumberBackground",
+				"description": "Background decoration color for large numbers",
+				"defaults": {
+					"dark": "#FF000055",
+					"light": "#FF000055",
+					"highContrast": "#FF000055"
+				}
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
