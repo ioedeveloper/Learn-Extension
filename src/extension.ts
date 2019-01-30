@@ -12,17 +12,20 @@ export function activate(context: vscode.ExtensionContext) {
 
 	let activeEditor = vscode.window.activeTextEditor;
 	if(activeEditor){
-		logActivity(activeEditor);
+		// logActivity(activeEditor);
+		triggerUpdateDecorations();
 	}
 
 	vscode.window.onDidChangeActiveTextEditor((editor: vscode.TextEditor | undefined) => {
 		activeEditor = editor;
-		logActivity(activeEditor);
+		// logActivity(activeEditor);
+		triggerUpdateDecorations();
 	}, null, context.subscriptions);
 
 	vscode.workspace.onDidChangeTextDocument((event)=>{
 		if(activeEditor && event.document === activeEditor.document){
-			logActivity(activeEditor);
+			// logActivity(activeEditor);
+			triggerUpdateDecorations();
 		}
 	}, null, context.subscriptions);
 
@@ -37,6 +40,51 @@ export function activate(context: vscode.ExtensionContext) {
 		}else{
 			console.log('No active editor found');
 		}
+	}
+
+	let timeout : NodeJS.Timer | null = null;
+	function triggerUpdateDecorations() {
+		if (timeout) {
+			clearTimeout(timeout);
+		}
+		timeout = setTimeout(updateDecorations, 500);
+	}
+
+	const decorationType = vscode.window.createTextEditorDecorationType({
+		borderWidth: '1px',
+		borderStyle: 'solid',
+		overviewRulerColor: 'blue',
+		overviewRulerLane: vscode.OverviewRulerLane.Right,
+		light: {
+			// this color will be used in light color themes
+			borderColor: 'darkblue'
+		},
+		dark: {
+			// this color will be used in dark color themes
+			borderColor: 'lightblue'
+		}
+	});
+
+	function updateDecorations() {
+		if (!activeEditor) {
+			return;
+		}
+		const regEx = /\d+/g;
+		const text = activeEditor.document.getText();
+		const smallNumbers: vscode.DecorationOptions[] = [];
+		const largeNumbers: vscode.DecorationOptions[] = [];
+		let match;
+		while (match = regEx.exec(text)) {
+			const startPos = activeEditor.document.positionAt(match.index);
+			const endPos = activeEditor.document.positionAt(match.index + match[0].length);
+			const decoration = { range: new vscode.Range(startPos, endPos), hoverMessage: 'Number **' + match[0] + '**' };
+			if (match[0].length < 3) {
+				smallNumbers.push(decoration);
+			} else {
+				largeNumbers.push(decoration);
+			}
+		}
+		activeEditor.setDecorations(decorationType, smallNumbers);
 	}
 }
 
